@@ -7,7 +7,7 @@ defmodule Platform.Products.Game do
 
 
   schema "games" do
-    many_to_many :players, Player, join_through Gameplay
+    many_to_many :players, Player, join_through: Gameplay
 
     field :description, :string
     field :featured, :boolean, default: false
