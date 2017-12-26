@@ -18,7 +18,7 @@ defmodule Platform.AccountsTest do
 
       player_attrs_map =
         player
-        |> Map.from_truct()
+        |> Map.from_struct()
         |> Map.delete(:password)
 
       %Platform.Accounts.Player{}
