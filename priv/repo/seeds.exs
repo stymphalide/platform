@@ -14,8 +14,7 @@ alias Platform.Products
 
 # Players
 
-Accounts.create_player(%{display_name: "José Valim", username: "josevalim", password: "josevalim", score: 1000})
-Accounts.create_player(%{display_name: "Evan Czaplicki", username: "evancz", password: "evancz", score: 2000})
+Accounts.create_player(%{display_name: "Jose Valim", username: "josevalim", password: "josevalim", score: 1000})
 Accounts.create_player(%{display_name: "Angelo Birrer", username: "angelobirrer", password: "angelobirrer", score: 3000})
 
 # Games
