@@ -26,13 +26,22 @@ type alias Game =
     , title : String
     }
 
+type alias Player =
+    { displayName : String
+    , id : Int
+    , score : Int
+    , username : String
+    }
+
 type alias Model =
     { gamesList : List Game
+    , playersList : List Player
     }
 
 -- MESSAGES
 type Msg 
     = FetchGamesList (Result Http.Error (List Game))
+    | FetchPlayersList (Result Http.Error (List Player))
 
 -- INIT
 init : (Model, Cmd Msg)
@@ -43,10 +52,16 @@ initialModel : Model
 initialModel =
     { gamesList = 
         []
+    , playersList = 
+        []
     }
 initialCommand : Cmd Msg
 initialCommand =
-    fetchGamesList
+    Cmd.batch
+        [ fetchGamesList
+        , fetchPlayersList
+        ]
+    
 
 -- UPDATE
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -56,6 +71,12 @@ update msg model =
             case result of
                 Ok games ->
                     ( {model | gamesList = games}, Cmd.none )
+                Err _ ->
+                    (model, Cmd.none)
+        FetchPlayersList result ->
+            case result of
+                Ok players ->
+                    ({model | playersList = players}, Cmd.none)
                 Err _ ->
                     (model, Cmd.none)
 
@@ -69,6 +90,11 @@ fetchGamesList : Cmd Msg
 fetchGamesList =
     Http.get "/api/games" decodeGamesList
         |> Http.send FetchGamesList
+fetchPlayersList : Cmd Msg
+fetchPlayersList =
+    Http.get "/api/players" decodePlayersList
+        |> Http.send FetchPlayersList
+
 
 -- DECODERS
 decodeGame : Decode.Decoder Game
@@ -79,12 +105,23 @@ decodeGame =
         (Decode.field "id" Decode.int)
         (Decode.field "thumbnail" Decode.string)
         (Decode.field "title" Decode.string)
-
-
-
 decodeGamesList : Decode.Decoder (List Game)
 decodeGamesList =
     decodeGame
+        |> Decode.list
+        |> Decode.at [ "data" ]
+
+decodePlayer : Decode.Decoder Player
+decodePlayer =
+    Decode.map4 Player
+        (Decode.field "display_name" Decode.string)
+        (Decode.field "id" Decode.int)
+        (Decode.field "score" Decode.int)
+        (Decode.field "username" Decode.string)
+
+decodePlayersList : Decode.Decoder (List Player)
+decodePlayersList =
+    decodePlayer
         |> Decode.list
         |> Decode.at [ "data" ]
 
@@ -92,18 +129,19 @@ decodeGamesList =
 --VIEW
 view : Model -> Html Msg
 view model =
-    if List.isEmpty model.gamesList then
-        div [] []
-    else
-        div []
-            [ h1 [ class "games-section" ] [ text "Games" ]
-            , gamesIndex model
-            ]
+    div []
+        [ h1 [ class "games-section" ] [ text "Games" ]
+        , gamesIndex model
+        , playersIndex model
+        ]
 
 
 gamesIndex : Model -> Html Msg
 gamesIndex model =
-    div [class "games-index"] [gamesList model.gamesList]
+    if List.isEmpty model.gamesList then
+        div [] []
+    else
+        div [class "games-index"] [gamesList model.gamesList]
 
 gamesList : List Game -> Html Msg
 gamesList games  =
@@ -116,3 +154,25 @@ gamesListItem game =
         [ strong  [] [ text game.title ] 
         , p [] [ text game.description ]
         ]
+
+playersIndex : Model -> Html Msg
+playersIndex model =
+    if List.isEmpty model.playersList then
+        div [] []
+    else
+        div [class "games-index"] 
+            [ h1 [ class "players-section" ] [text "Players"]
+            , playersList model.playersList
+            ]
+
+playersList : List Player -> Html Msg
+playersList players = 
+    ul [class "players-list"]
+    (List.map playersListItem players)
+playersListItem : Player -> Html Msg
+playersListItem player =
+    li [class "player-item"]
+        [ strong [] [text player.displayName]
+        , p [] [text (toString player.score)]
+        ]
+
