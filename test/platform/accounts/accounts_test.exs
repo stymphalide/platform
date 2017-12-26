@@ -16,7 +16,13 @@ defmodule Platform.AccountsTest do
         |> Enum.into(@valid_attrs)
         |> Accounts.create_player()
 
-      player
+      player_attrs_map =
+        player
+        |> Map.from_truct()
+        |> Map.delete(:password)
+
+      %Platform.Accounts.Player{}
+      |> Map.merge(player_attrs_map)
     end
 
     test "list_players/0 returns all players" do
@@ -45,7 +51,7 @@ defmodule Platform.AccountsTest do
       assert %Player{} = player
       assert player.display_name == "some updated display name"
       assert player.score == 43
-      assser player.password == "some updated password"
+      #assert player.password == "some updated password"
       assert player.username == "some updated username"
     end
 
