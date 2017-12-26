@@ -35,3 +35,9 @@
 	overflow: hidden;
 }
 
+/* Navigation section */
+.nav {
+	margin-top: 6px;
+	max-height: 50px;
+	overflow: hidden:;
+}
