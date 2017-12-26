@@ -25,6 +25,8 @@ defmodule PlatformWeb.Router do
   # Other scopes may use custom stacks.
   scope "/api", PlatformWeb do
     pipe_through :api
+
+    resources "/players", PlayerApiController, except: [:new, :edit]
     resources "/games", GameController, except: [:new, :edit]
   end
 end
