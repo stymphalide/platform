@@ -3,7 +3,8 @@ module Main exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
-
+import Http
+import Json.Decode as Decode
 
 -- MAIN
 
@@ -18,8 +19,11 @@ main =
 
 -- MODEL
 type alias Game =
-    { title : String
-    , description : String
+    { description : String
+    , featured : Bool
+    , id : Int
+    , thumbnail : String
+    , title : String
     }
 
 type alias Model =
@@ -28,30 +32,61 @@ type alias Model =
 
 -- MESSAGES
 type Msg 
-    = FetchGamesList
+    = FetchGamesList (Result Http.Error (List Game))
 
 -- INIT
 init : (Model, Cmd Msg)
 init =
-    (initialModel, Cmd.none)
+    (initialModel, initialCommand)
 
 initialModel : Model
 initialModel =
     { gamesList = 
         []
     }
+initialCommand : Cmd Msg
+initialCommand =
+    fetchGamesList
 
 -- UPDATE
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
-        FetchGamesList ->
-            ( {model | gamesList = []}, Cmd.none )
+        FetchGamesList result ->
+            case result of
+                Ok games ->
+                    ( {model | gamesList = games}, Cmd.none )
+                Err _ ->
+                    (model, Cmd.none)
 
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
+
+-- COMMANDS
+fetchGamesList : Cmd Msg
+fetchGamesList =
+    Http.get "/api/games" decodeGamesList
+        |> Http.send FetchGamesList
+
+-- DECODERS
+decodeGame : Decode.Decoder Game
+decodeGame =
+    Decode.map5 Game
+        (Decode.field "description" Decode.string)
+        (Decode.field "featured" Decode.bool)
+        (Decode.field "id" Decode.int)
+        (Decode.field "thumbnail" Decode.string)
+        (Decode.field "title" Decode.string)
+
+
+
+decodeGamesList : Decode.Decoder (List Game)
+decodeGamesList =
+    decodeGame
+        |> Decode.list
+        |> Decode.at [ "data" ]
 
 
 --VIEW
