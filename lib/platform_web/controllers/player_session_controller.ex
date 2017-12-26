@@ -1,5 +1,5 @@
 defmodule PlatfromWeb.PlayerSessionController do
-	use PlatfromWeb, :controller
+	use PlatformWeb, :controller
 
 	def new(conn, _) do
 		render conn, "new.html"
@@ -21,7 +21,7 @@ defmodule PlatfromWeb.PlayerSessionController do
 	def delete(conn, _) do
 		conn
 		|> PlatfromWeb.PlayerAuthController.sign_out()
-		|> redirect(to: player_session_path(conn, _new))		
+		|> redirect(to: player_session_path(conn, :new))		
 	end
 
 end
