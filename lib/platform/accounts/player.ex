@@ -5,6 +5,9 @@ defmodule Platform.Accounts.Player do
 
 
   schema "players" do
+    field :display_name, :string
+    field :password, :string, virtual: true
+    field :password_digest, :string
     field :score, :integer
     field :username, :string
 
