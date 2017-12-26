@@ -1,6 +1,8 @@
 defmodule PlatformWeb.PageController do
   use PlatformWeb, :controller
 
+  plug :authenticate when action in [:index]
+
   def index(conn, _params) do
     render conn, "index.html"
   end
