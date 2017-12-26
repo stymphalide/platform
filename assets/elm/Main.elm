@@ -130,18 +130,24 @@ decodePlayersList =
 view : Model -> Html Msg
 view model =
     div []
-        [ h1 [ class "games-section" ] [ text "Games" ]
+        [ featured model
         , gamesIndex model
         , playersIndex model
         ]
 
+featured : Model -> Html Msg
+featured model =
+    div [ class "row featured" ]
+        [ h1 [] [text "Featured"] ]
 
 gamesIndex : Model -> Html Msg
 gamesIndex model =
     if List.isEmpty model.gamesList then
         div [] []
     else
-        div [class "games-index"] [gamesList model.gamesList]
+        div [class "games-index"] 
+        [ h1 [ class "games-section" ] [ text "Games" ]
+        , gamesList model.gamesList]
 
 gamesList : List Game -> Html Msg
 gamesList games  =
