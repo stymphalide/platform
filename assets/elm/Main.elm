@@ -9,21 +9,28 @@ main : Html msg
 main =
     div []
         [ h1 [] [text "Games"]
-        , gamesIndex
+        , gamesIndex model
         ]
 
+-- MODEL
+model : List String
+model =
+    [ "Platform Game"
+    , "Adventure Game"
+    ]
 
-gamesIndex : Html msg
-gamesIndex =
-    div [class "games-index"] [gamesList]
 
-gamesList : Html msg
-gamesList =
+--VIEW
+
+gamesIndex : List String -> Html msg
+gamesIndex gameTitles =
+    div [class "games-index"] [gamesList gameTitles]
+
+gamesList : List String -> Html msg
+gamesList gameTitles =
     ul [class "games-list"] 
-        [ gamesListItem "Platform Game"
-        , gamesListItem "Adventure Game"
-        ]
+    (List.map gamesListItem gameTitles)
 
 gamesListItem : String -> Html msg
-gamesListItem game =
-    li [] [text game]
+gamesListItem gameTitle =
+    li [] [text gameTitle]
