@@ -64,6 +64,7 @@ type Msg
     | TimeUpdate Time
     | CountdownTimer Time
     | SetNewItemPositionX Int
+    | MoveCharacter Time
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -92,9 +93,9 @@ update msg model =
                             Playing ->
                                 (model, Cmd.none)
                 37 -> -- Left Arrow
-                    ({model | characterPositionX = model.characterPositionX - 15}, Cmd.none)
+                    ({model | characterVelocity = -0.3}, Cmd.none)
                 39 -> -- Right Arrow
-                    ( {model | characterPositionX = model.characterPositionX + 15}, Cmd.none)
+                    ( {model | characterVelocity =  0.3}, Cmd.none)
                 _ ->
                     (model, Cmd.none)
         TimeUpdate time ->
@@ -116,6 +117,8 @@ update msg model =
                 ( model, Cmd.none )
         SetNewItemPositionX newPositionX ->
             ( {model | itemPositionX = newPositionX}, Cmd.none )
+        MoveCharacter time ->
+            ( {model | characterPositionX = model.characterPositionX + model.characterVelocity * time}, Cmd.none )
 
 characterFoundItem : Model -> Bool
 characterFoundItem model =
@@ -140,6 +143,7 @@ subscriptions model =
     Sub.batch 
     [ downs KeyDown
     , diffs TimeUpdate
+    , diffs MoveCharacter
     , every second CountdownTimer
     ]
 
