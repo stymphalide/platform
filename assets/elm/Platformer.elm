@@ -39,7 +39,7 @@ initialModel =
     , itemPositionY = 300
     , itemsCollected = 0
     , playerScore = 0
-    , timeRemaining = 0
+    , timeRemaining = 10
     }
 
 
@@ -77,7 +77,10 @@ update msg model =
             else
                 (model, Cmd.none)
         CountdownTimer time ->
-            ( model, Cmd.none )
+            if model.timeRemaining > 0 then
+                ( {model | timeRemaining = model.timeRemaining - 1}, Cmd.none )
+            else
+                ( model, Cmd.none )
         SetNewItemPositionX newPositionX ->
             ( {model | itemPositionX = newPositionX}, Cmd.none )
 
