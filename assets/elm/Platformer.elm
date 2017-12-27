@@ -49,7 +49,11 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
         KeyDown keyCode ->
-            ( {model | characterPositionX = model.characterPositionX + 15}, Cmd.none)
+            case keyCode of
+                39 -> -- Right Arrow
+                    ( {model | characterPositionX = model.characterPositionX + 15}, Cmd.none)
+                _ ->
+                    (model, Cmd.none)
 
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
