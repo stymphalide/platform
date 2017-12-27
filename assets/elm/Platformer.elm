@@ -72,6 +72,7 @@ type Msg
     | CountdownTimer Time
     | SetNewItemPositionX Int
     | MoveCharacter Time
+    | ChangeDirection Time
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -136,6 +137,13 @@ update msg model =
             ( {model | itemPositionX = newPositionX}, Cmd.none )
         MoveCharacter time ->
             ( {model | characterPositionX = model.characterPositionX + model.characterVelocity * time}, Cmd.none )
+        ChangeDirection time ->
+            if model.characterVelocity > 0 then
+                ( {model | characterDirection = Right}, Cmd.none)
+            else if model.characterVelocity < 0 then
+                ( {model | characterDirection = Left}, Cmd.none)
+            else
+                (model, Cmd.none)
 
 characterFoundItem : Model -> Bool
 characterFoundItem model =
@@ -162,6 +170,7 @@ subscriptions model =
     , ups KeyUp
     , diffs TimeUpdate
     , diffs MoveCharacter
+    , diffs ChangeDirection
     , every second CountdownTimer
     ]
 
@@ -290,13 +299,21 @@ viewGameGround =
 
 viewCharacter : Model -> Svg Msg
 viewCharacter model =
-    image
-        [ xlinkHref "/images/character.gif"
-        , x <| toString model.characterPositionX
-        , y <| toString model.characterPositionY
-        , width "50"
-        , height "50"
-        ] []
+    let
+        characterImage =
+            case model.characterDirection of
+                Right ->
+                    "/images/character-right.gif"
+                Left ->
+                    "/images/character-left.gif"
+    in
+        image
+            [ xlinkHref characterImage
+            , x <| toString model.characterPositionX
+            , y <| toString model.characterPositionY
+            , width "50"
+            , height "50"
+            ] []
 
 viewItem : Model -> Svg Msg
 viewItem model =
