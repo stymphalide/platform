@@ -21,8 +21,15 @@ main =
     }
 
 -- MODEL
+type GameState
+    = StartScreen
+    | Playing
+    | Success
+    | GameOver
+
 type alias Model =
-    { characterPositionX : Int
+    { gameState : GameState
+    , characterPositionX : Int
     , characterPositionY : Int
     , itemPositionX : Int
     , itemPositionY : Int
@@ -33,7 +40,8 @@ type alias Model =
 
 initialModel : Model
 initialModel =
-    { characterPositionX = 50
+    { gameState = StartScreen
+    , characterPositionX = 50
     , characterPositionY = 300
     , itemPositionX = 500
     , itemPositionY = 300
@@ -116,15 +124,28 @@ view model =
 viewGame : Model -> Svg Msg
 viewGame model = 
     svg [ version "1.1", width "600", height "400" ] 
-        [ viewGameWindow 
-        , viewGameSky
-        , viewGameGround
-        , viewCharacter model
-        , viewItem model
-        , viewGameScore model
-        , viewItemsCollected model
-        , viewGameTime model
-        ]
+        (viewGameState model)
+
+viewGameState : Model -> List (Svg Msg)
+viewGameState model = 
+    case model.gameState of
+        StartScreen ->
+            []
+        Playing ->
+            [ viewGameWindow 
+            , viewGameSky
+            , viewGameGround
+            , viewCharacter model
+            , viewItem model
+            , viewGameScore model
+            , viewItemsCollected model
+            , viewGameTime model
+            ]
+        Success ->
+            []
+        GameOver ->
+            []
+
 viewGameScore : Model -> Svg Msg
 viewGameScore model =
     let
