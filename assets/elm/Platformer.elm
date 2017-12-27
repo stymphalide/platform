@@ -29,8 +29,9 @@ type GameState
 
 type alias Model =
     { gameState : GameState
-    , characterPositionX : Int
-    , characterPositionY : Int
+    , characterPositionX : Float
+    , characterPositionY : Float
+    , characterVelocity : Float
     , itemPositionX : Int
     , itemPositionY : Int
     , playerScore : Int
@@ -41,8 +42,9 @@ type alias Model =
 initialModel : Model
 initialModel =
     { gameState = StartScreen
-    , characterPositionX = 50
-    , characterPositionY = 300
+    , characterPositionX = 50.0
+    , characterPositionY = 300.0
+    , characterVelocity = 0.0
     , itemPositionX = 500
     , itemPositionY = 300
     , itemsCollected = 0
@@ -119,14 +121,17 @@ characterFoundItem : Model -> Bool
 characterFoundItem model =
     let
         approximateItemLowerBound =
-            model.itemPositionX - 35
+            toFloat model.itemPositionX - 35
         approximateItemUpperBound =
-            model.itemPositionX + 35
+            toFloat model.itemPositionX + 35
 
-        approximateItemRange =
-            List.range approximateItemLowerBound approximateItemUpperBound
+        currentCharacterPosition =
+            model.characterPositionX
     in
-        List.member model.characterPositionX approximateItemRange
+        currentCharacterPosition
+            >= approximateItemLowerBound
+            && currentCharacterPosition
+            <= approximateItemUpperBound
 
 
 -- SUBSCRIPTIONS
