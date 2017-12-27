@@ -70,6 +70,16 @@ update msg model =
             ( model, Cmd.none )
         KeyDown keyCode ->
             case keyCode of
+                32 -> -- Space Bar
+                    if model.gameState == StartScreen then
+                        ( { model 
+                            | gameState = Playing
+                            , playerScore = 0
+                            , itemsCollected = 0
+                            , timeRemaining = 10
+                        }, Cmd.none)
+                    else
+                        (model, Cmd.none)
                 37 -> -- Left Arrow
                     ({model | characterPositionX = model.characterPositionX - 15}, Cmd.none)
                 39 -> -- Right Arrow
@@ -130,7 +140,13 @@ viewGameState : Model -> List (Svg Msg)
 viewGameState model = 
     case model.gameState of
         StartScreen ->
-            []
+            [ viewGameWindow 
+            , viewGameSky
+            , viewGameGround
+            , viewCharacter model
+            , viewItem model
+            , viewStartScreenText 
+            ]
         Playing ->
             [ viewGameWindow 
             , viewGameSky
@@ -158,6 +174,14 @@ viewGameScore model =
             [ viewGameText 25 25 "SCORE"
             , viewGameText 25 40 currentScore
             ]
+
+
+viewStartScreenText : Svg Msg
+viewStartScreenText =
+    Svg.svg []
+        [ viewGameText 140 160 "Collect ten coins in ten seconds!"
+        , viewGameText 140 180 "Press the SPACE BAR key to start."
+        ]
 
 
 viewGameText : Int -> Int -> String -> Svg Msg
