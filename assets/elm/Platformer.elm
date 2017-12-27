@@ -1,9 +1,12 @@
 module Platformer exposing (..)
 
+import AnimationFrame exposing (diffs)
 import Html exposing (Html, div)
 import Keyboard exposing (KeyCode, downs)
+import Random
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
+import Time exposing (Time)
 
 
 
@@ -42,6 +45,7 @@ init =
 type Msg
     = NoOp
     | KeyDown KeyCode
+    | TimeUpdate Time
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -56,6 +60,11 @@ update msg model =
                     ( {model | characterPositionX = model.characterPositionX + 15}, Cmd.none)
                 _ ->
                     (model, Cmd.none)
+        TimeUpdate time ->
+            if characterFoundItem model then
+                ( {model | itemPositionX = model.itemPositionX - 100}, Cmd.none)
+            else
+                (model, Cmd.none)
 
 characterFoundItem : Model -> Bool
 characterFoundItem model =
@@ -74,7 +83,9 @@ characterFoundItem model =
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch [ downs KeyDown ]
+    Sub.batch 
+    [ downs KeyDown
+    , diffs TimeUpdate]
 
 -- VIEW
 view : Model -> Html Msg
@@ -135,15 +146,11 @@ viewCharacter model =
 
 viewItem : Model -> Svg Msg
 viewItem model =
-    case characterFoundItem model of
-        True ->
-            svg [] []
-        False ->
-            image
-                [ xlinkHref "/images/coin.svg"
-                , x <| toString model.itemPositionX
-                , y <| toString model.itemPositionY
-                , width "20"
-                , height "20"
-                ] []
+    image
+        [ xlinkHref "/images/coin.svg"
+        , x <| toString model.itemPositionX
+        , y <| toString model.itemPositionY
+        , width "20"
+        , height "20"
+        ] []
 
