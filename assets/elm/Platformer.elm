@@ -69,7 +69,10 @@ update msg model =
                     (model, Cmd.none)
         TimeUpdate time ->
             if characterFoundItem model then
-                ( {model | itemsCollected = model.itemsCollected + 1}, Random.generate SetNewItemPositionX (Random.int 50 500) )
+                ( { model 
+                    | itemsCollected = model.itemsCollected + 1
+                    , playerScore = model.playerScore + 100
+                }, Random.generate SetNewItemPositionX (Random.int 50 500) )
             else
                 (model, Cmd.none)
         SetNewItemPositionX newPositionX ->
