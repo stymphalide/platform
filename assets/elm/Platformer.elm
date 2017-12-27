@@ -49,7 +49,11 @@ view model =
 
 viewGame : Svg Msg
 viewGame =
-    svg [ version "1.1", width "600", height "400" ] [ viewGameWindow ]
+    svg [ version "1.1", width "600", height "400" ] 
+        [ viewGameWindow 
+        , viewGameSky
+        , viewGameGround
+        ]
 
 
 viewGameWindow : Svg Msg
@@ -59,5 +63,25 @@ viewGameWindow =
         , height "400"
         , fill "none"
         , stroke  "black"
-        ]
-        []
+        ] []
+
+
+viewGameSky : Svg Msg
+viewGameSky =
+    rect
+        [ x "0"
+        , y "0"
+        , width "600"
+        , height "300"
+        , fill "#4b7cfb"
+        ] []
+
+viewGameGround : Svg Msg
+viewGameGround =
+    rect 
+        [ x "0"
+        , y "300"
+        , width "600"
+        , height "100"
+        , fill "green"
+        ] []
