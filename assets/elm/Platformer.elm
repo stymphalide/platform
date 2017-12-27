@@ -50,6 +50,8 @@ update msg model =
             ( model, Cmd.none )
         KeyDown keyCode ->
             case keyCode of
+                37 -> -- Left Arrow
+                    ({model | characterPositionX = model.characterPositionX - 15}, Cmd.none)
                 39 -> -- Right Arrow
                     ( {model | characterPositionX = model.characterPositionX + 15}, Cmd.none)
                 _ ->
