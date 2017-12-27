@@ -41,17 +41,20 @@ init =
 -- UPDATE
 type Msg
     = NoOp
+    | KeyDown KeyCode
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         NoOp ->
             ( model, Cmd.none )
+        KeyDown keyCode ->
+            ( {model | characterPositionX = model.characterPositionX + 15}, Cmd.none)
 
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    Sub.batch [ downs KeyDown ]
 
 -- VIEW
 view : Model -> Html Msg
