@@ -6,7 +6,7 @@ import Keyboard exposing (KeyCode, downs)
 import Random
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
-import Time exposing (Time)
+import Time exposing (Time, every, second)
 
 
 
@@ -52,6 +52,7 @@ type Msg
     = NoOp
     | KeyDown KeyCode
     | TimeUpdate Time
+    | CountdownTimer Time
     | SetNewItemPositionX Int
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -75,6 +76,8 @@ update msg model =
                 }, Random.generate SetNewItemPositionX (Random.int 50 500) )
             else
                 (model, Cmd.none)
+        CountdownTimer time ->
+            ( model, Cmd.none )
         SetNewItemPositionX newPositionX ->
             ( {model | itemPositionX = newPositionX}, Cmd.none )
 
@@ -97,7 +100,9 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch 
     [ downs KeyDown
-    , diffs TimeUpdate]
+    , diffs TimeUpdate
+    , every second CountdownTimer
+    ]
 
 -- VIEW
 view : Model -> Html Msg
