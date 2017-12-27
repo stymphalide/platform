@@ -26,6 +26,8 @@ type alias Model =
     , characterPositionY : Int
     , itemPositionX : Int
     , itemPositionY : Int
+    , playerScore : Int
+    , itemsCollected : Int
     }
 
 initialModel : Model
@@ -34,6 +36,8 @@ initialModel =
     , characterPositionY = 300
     , itemPositionX = 500
     , itemPositionY = 300
+    , itemsCollected = 0
+    , playerScore = 0
     }
 
 
@@ -63,7 +67,7 @@ update msg model =
                     (model, Cmd.none)
         TimeUpdate time ->
             if characterFoundItem model then
-                ( model, Random.generate SetNewItemPositionX (Random.int 50 500) )
+                ( {model | itemsCollected = model.itemsCollected + 1}, Random.generate SetNewItemPositionX (Random.int 50 500) )
             else
                 (model, Cmd.none)
         SetNewItemPositionX newPositionX ->
@@ -104,7 +108,31 @@ viewGame model =
         , viewGameGround
         , viewCharacter model
         , viewItem model
+        , viewGameScore model
         ]
+viewGameScore : Model -> Svg Msg
+viewGameScore model =
+    let
+        currentScore =
+            model.playerScore
+                |> toString
+                |> String.padLeft 5 '0'
+    in
+        Svg.svg []
+            [ viewGameText 25 25 "SCORE"
+            , viewGameText 25 40 currentScore
+            ]
+
+
+viewGameText : Int -> Int -> String -> Svg Msg
+viewGameText positionX positionY str =
+    Svg.text_
+        [ x <| toString positionX
+        , y <| toString positionY
+        , fontFamily "Courier"
+        , fontWeight "bold"
+        , fontSize "16"
+        ] [Svg.text str]
 
 
 viewGameWindow : Svg Msg
