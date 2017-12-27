@@ -28,6 +28,7 @@ type alias Model =
     , itemPositionY : Int
     , playerScore : Int
     , itemsCollected : Int
+    , timeRemaining : Int
     }
 
 initialModel : Model
@@ -38,6 +39,7 @@ initialModel =
     , itemPositionY = 300
     , itemsCollected = 0
     , playerScore = 0
+    , timeRemaining = 0
     }
 
 
@@ -109,6 +111,7 @@ viewGame model =
         , viewCharacter model
         , viewItem model
         , viewGameScore model
+        , viewItemsCollected model
         ]
 viewGameScore : Model -> Svg Msg
 viewGameScore model =
@@ -185,3 +188,21 @@ viewItem model =
         , height "20"
         ] []
 
+viewItemsCollected : Model -> Svg Msg
+viewItemsCollected model =
+    let
+        currentItemCount =
+            model.itemsCollected
+                |> toString
+                |> String.padLeft 3 '0'
+    in
+        Svg.svg []
+            [ image 
+                [ xlinkHref "/images/coin.svg"
+                , x "275"
+                , y "18"
+                , width "15"
+                , height "15"
+                ] []
+            , viewGameText 300 30 ("x " ++ currentItemCount)
+            ] 
