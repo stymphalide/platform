@@ -57,6 +57,20 @@ update msg model =
                 _ ->
                     (model, Cmd.none)
 
+characterFoundItem : Model -> Bool
+characterFoundItem model =
+    let
+        approximateItemLowerBound =
+            model.itemPositionX - 35
+        approximateItemUpperBound =
+            model.itemPositionX + 35
+
+        approximateItemRange =
+            List.range approximateItemLowerBound approximateItemUpperBound
+    in
+        List.member model.characterPositionX approximateItemRange
+
+
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -121,11 +135,15 @@ viewCharacter model =
 
 viewItem : Model -> Svg Msg
 viewItem model =
-    image
-        [ xlinkHref "/images/coin.svg"
-        , x <| toString model.itemPositionX
-        , y <| toString model.itemPositionY
-        , width "20"
-        , height "20"
-        ] []
+    case characterFoundItem model of
+        True ->
+            svg [] []
+        False ->
+            image
+                [ xlinkHref "/images/coin.svg"
+                , x <| toString model.itemPositionX
+                , y <| toString model.itemPositionY
+                , width "20"
+                , height "20"
+                ] []
 
