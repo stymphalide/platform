@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, src)
+import Html.Attributes exposing (class, href, src)
 import Html.Events exposing (onClick)
 import Http
 import Json.Decode as Decode
@@ -171,16 +171,22 @@ gamesIndex model =
 
 gamesList : List Game -> Html Msg
 gamesList games  =
-    ul [class "games-list"] 
+    ul [class "games-list media-list"] 
     (List.map gamesListItem games)
 
 gamesListItem : Game -> Html Msg
 gamesListItem game =
-    li [class "game-item"] 
-        [ strong  [] [ text game.title ] 
-        , p [] [ text game.description ]
+    a [ href "#"]
+    [ li [class "game-item media"]
+        [ div [ class "media-left" ]
+            [ img [ class "media-object", src game.thumbnail] []
+            ]
+        , div [class "media-middle media-body" ] 
+            [ h4 [ class "media-heading"] [ text game.title ]
+            , p [] [ text game.description ]
+            ]
         ]
-
+    ]
 playersIndex : Model -> Html Msg
 playersIndex model =
     if List.isEmpty model.playersList then
@@ -199,12 +205,14 @@ playersSortedByScore players =
 
 playersList : List Player -> Html Msg
 playersList players = 
-    ul [class "players-list"]
-    (List.map playersListItem players)
+    div [class "players-list panel panel-info"]
+        [ div [ class "panel-heading" ] [ text "Leaderboard"]
+        , ul [ class "list-group" ] (List.map playersListItem players)
+        ]
 playersListItem : Player -> Html Msg
 playersListItem player =
-    li [class "player-item"]
-        [ strong [] [text player.displayName]
-        , p [] [text (toString player.score)]
+    li [class "player-item list-group-item"]
+        [ strong [] [ text player.displayName ]
+        , p [ class "badge" ] [ text (toString player.score) ]
         ]
 
