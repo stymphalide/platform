@@ -2,7 +2,7 @@ module Platformer exposing (..)
 
 import AnimationFrame exposing (diffs)
 import Html exposing (Html, div)
-import Keyboard exposing (KeyCode, downs)
+import Keyboard exposing (KeyCode, downs, ups)
 import Random
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
@@ -61,6 +61,7 @@ init =
 type Msg
     = NoOp
     | KeyDown KeyCode
+    | KeyUp KeyCode
     | TimeUpdate Time
     | CountdownTimer Time
     | SetNewItemPositionX Int
@@ -98,6 +99,16 @@ update msg model =
                     ( {model | characterVelocity =  0.3}, Cmd.none)
                 _ ->
                     (model, Cmd.none)
+        KeyUp keyCode ->
+            case keyCode of
+                37 -> -- Left Arrow 
+                    ( {model | characterVelocity = 0 }, Cmd.none )
+                39 -> -- Right Arrow
+                    ( {model | characterVelocity = 0 }, Cmd.none )
+                _ ->
+                    ( model, Cmd.none )
+
+
         TimeUpdate time ->
             if characterFoundItem model then
                 ( { model 
@@ -142,6 +153,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch 
     [ downs KeyDown
+    , ups KeyUp
     , diffs TimeUpdate
     , diffs MoveCharacter
     , every second CountdownTimer
