@@ -1,8 +1,11 @@
 module Platformer exposing (..)
 
 import Html exposing (Html, div)
+import Keyboard exposing (KeyCode, downs)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
+
+
 
 -- MAIN
 main : Program Never Model Msg
