@@ -21,6 +21,10 @@ main =
     }
 
 -- MODEL
+type Direction
+    = Left
+    | Right
+
 type GameState
     = StartScreen
     | Playing
@@ -32,6 +36,7 @@ type alias Model =
     , characterPositionX : Float
     , characterPositionY : Float
     , characterVelocity : Float
+    , characterDirection : Direction
     , itemPositionX : Int
     , itemPositionY : Int
     , playerScore : Int
@@ -45,6 +50,7 @@ initialModel =
     , characterPositionX = 50.0
     , characterPositionY = 300.0
     , characterVelocity = 0.0
+    , characterDirection = Right
     , itemPositionX = 500
     , itemPositionY = 300
     , itemsCollected = 0
